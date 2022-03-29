@@ -5,6 +5,8 @@ import com.meli.wallet.dto.OperationDto;
 import com.meli.wallet.repository.WalletRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class WalletService {
 
@@ -17,7 +19,16 @@ public class WalletService {
     }
 
     public void save(OperationDto dto) {
+
         var wallet = converter.apply(dto);
-        repository.save(wallet);
+        var find = repository.findById(converter.apply(dto));
+        find.stream().findFirst().ifPresentOrElse(findWallet -> {
+
+            findWallet.setQuantity(findWallet.getQuantity() + wallet.getQuantity());
+            var total = dto.getValue().multiply(BigDecimal.valueOf(dto.getQuantity()));
+            findWallet.setValue(findWallet.getValue().add(total));
+
+        }, () -> repository.save(wallet));
+
     }
 }

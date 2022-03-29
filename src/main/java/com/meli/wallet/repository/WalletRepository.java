@@ -6,6 +6,8 @@ import com.meli.wallet.model.wallet.Wallet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class WalletRepository {
@@ -13,8 +15,11 @@ public class WalletRepository {
     private final DynamoDBMapper operationMapper;
     private final QueryFactory query;
 
-    public void save(Wallet wallet) {
+    public List<Wallet> findById(Wallet wallet) {
+        return operationMapper.query(Wallet.class, query.findById(wallet));
+    }
 
+    public void save(Wallet wallet) {
         try {
             operationMapper.save(wallet);
         } catch (ConditionalCheckFailedException ignore) {

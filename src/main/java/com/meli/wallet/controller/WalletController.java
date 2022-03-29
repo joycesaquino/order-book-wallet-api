@@ -20,6 +20,7 @@ public class WalletController {
 
     @PatchMapping
     public ResponseEntity<?> update(@Valid @RequestBody final OperationDto dto) {
+        service.save(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
