@@ -16,8 +16,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<springdoc.version>1.6.6</springdoc.version>
-		<flywaydb.version>8.4.1</flywaydb.version>
 		<spring.version>2.6.4</spring.version>
+		<dynamodb.version>1.12.178</dynamodb.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -64,13 +64,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>${flywaydb.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<version>${dynamodb.version}</version>
 		</dependency>
 	</dependencies>
 
