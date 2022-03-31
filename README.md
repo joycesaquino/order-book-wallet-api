@@ -1,4 +1,4 @@
-# Order book API
+# Wallet API
 
 This API implements a service that will be responsible to transactions considering CREDIT and DEBIT in wallet API
 
