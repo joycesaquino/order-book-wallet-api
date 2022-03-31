@@ -1,6 +1,7 @@
 package com.meli.wallet.controller;
 
 import com.meli.wallet.dto.OperationDto;
+import com.meli.wallet.dto.OperationsDto;
 import com.meli.wallet.service.WalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,7 @@ public class WalletController {
     }
 
     @PostMapping
-    public ResponseEntity<?> update(@Valid @RequestBody final OperationDto dto) {
-        log.info("Operation requested with body {}", dto);
+    public ResponseEntity<?> update(@Valid @RequestBody final OperationsDto dto) {
         service.save(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

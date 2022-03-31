@@ -22,25 +22,20 @@ public class Wallet {
     private Audit audit;
 
 
-    public void credit(Wallet operation) {
-        var operationValue = operation.getValue();
-        var operationQuantity = operation.getQuantity();
+    public void credit(BigDecimal operationValue, Integer operationQuantity) {
 
         var total = operationValue.multiply(BigDecimal.valueOf(operationQuantity));
 
-        this.setQuantity(operation.getQuantity() + quantity);
-        this.setValue(operation.getValue().add(total));
+        this.quantity = quantity + operationQuantity;
+        this.value = value.add(total);
 
     }
 
-    public void debit(Wallet operation) {
-        var operationValue = operation.getValue();
-        var operationQuantity = operation.getQuantity();
-
+    public void debit(BigDecimal operationValue, Integer operationQuantity) {
         var total = operationValue.multiply(BigDecimal.valueOf(operationQuantity));
 
-        this.setQuantity(operation.getQuantity() - quantity);
-        this.setValue(operation.getValue().subtract(total));
+        this.quantity = quantity - operationQuantity;
+        this.value = value.subtract(total);
     }
 
 }

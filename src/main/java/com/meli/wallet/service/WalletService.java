@@ -1,14 +1,15 @@
 package com.meli.wallet.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.meli.wallet.converter.OperationConverter;
-import com.meli.wallet.dto.OperationDto;
-import com.meli.wallet.enums.Type;
+import com.meli.wallet.dto.OperationsDto;
 import com.meli.wallet.repository.WalletRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 
 @Service
+@Slf4j
 public class WalletService {
 
     private final OperationConverter converter;
@@ -19,30 +20,36 @@ public class WalletService {
         this.repository = repository;
     }
 
-    public void save(OperationDto dto) {
+    public void save(OperationsDto dtos) {
 
-        var wallet = converter.apply(dto);
-        var find = repository.findById(converter.apply(dto));
-        find.stream().findFirst().ifPresentOrElse(findWallet -> {
+        var operations = dtos.getOperations();
+
+        var transactions = operations.
+                stream()
+                .map(transaction -> repository.findById(converter.apply(transaction)).get());
+
+
+        TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
+
+        transactions.forEach(transaction -> {
+
+            var dto = operations.
+                    stream().
+                    filter(operation -> operation.getUserId().equals(transaction.getUserId()))
+                    .findFirst().get();
 
             var operationType = dto.getOperationType();
-            var value = dto.getValue();
-            var quantity = dto.getQuantity();
+            var operationQuantity = dto.getQuantity();
+            var operationValue = dto.getValue();
 
-            var total = value.multiply(BigDecimal.valueOf(quantity));
-
-            wallet.setId(findWallet.getId());
-
-            if (operationType.equals(Type.SALE)) {
-                wallet.setQuantity(findWallet.getQuantity() + quantity);
-                wallet.setValue(findWallet.getValue().add(total));
-            } else {
-                wallet.setQuantity(findWallet.getQuantity() - quantity);
-                wallet.setValue(findWallet.getValue().subtract(total));
+            switch (operationType) {
+                case SALE -> transaction.credit(operationValue, operationQuantity);
+                case BUY -> transaction.debit(operationValue, operationQuantity);
             }
+            transactionWriteRequest.addUpdate(transaction);
+        });
 
-            repository.save(wallet);
-        }, () -> repository.save(wallet));
-
+        repository.executeTransactionWrite(transactionWriteRequest);
     }
+
 }
