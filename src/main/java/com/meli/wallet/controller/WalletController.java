@@ -1,6 +1,5 @@
 package com.meli.wallet.controller;
 
-import com.meli.wallet.dto.OperationDto;
 import com.meli.wallet.dto.OperationsDto;
 import com.meli.wallet.service.WalletService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,4 +26,8 @@ public class WalletController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> find(@Valid @PathVariable final Long userId) {
+        return ResponseEntity.ok(service.findById(userId));
+    }
 }

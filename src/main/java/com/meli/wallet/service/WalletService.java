@@ -3,9 +3,12 @@ package com.meli.wallet.service;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.meli.wallet.converter.OperationConverter;
 import com.meli.wallet.dto.OperationsDto;
+import com.meli.wallet.model.wallet.Wallet;
 import com.meli.wallet.repository.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -18,6 +21,12 @@ public class WalletService {
     public WalletService(OperationConverter converter, WalletRepository repository) {
         this.converter = converter;
         this.repository = repository;
+    }
+
+    public Optional<Wallet> findById(Long userId) {
+        var wallet = new Wallet();
+        wallet.setUserId(userId);
+        return repository.findById(wallet);
     }
 
     public void save(OperationsDto dtos) {
