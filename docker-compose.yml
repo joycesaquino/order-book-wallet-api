@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   localstack:
-    container_name: order-book-api
+    container_name: order-book-wallet-api
     image: localstack/localstack:latest
     ports:
       - "4566-4597:4566-4597"
@@ -10,7 +10,7 @@ services:
     environment:
       - AWS_HOST=localstack
       - AWS_PORT=4566
-      - SERVICES=dynamodb,dynamodbstreams
+      - SERVICES=dynamodb,dynamodbstreams,sqs
       - PORT-WEB-UI=${PORT_WEB_UI-}
       - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock

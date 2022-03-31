@@ -12,14 +12,20 @@ function createTable() {
     printf 'Creating wallet table'
     aws dynamodb --endpoint-url=${endpointUrl} create-table --table-name wallet \
     --attribute-definitions \
-        AttributeName=id,AttributeType=S \
         AttributeName=userId,AttributeType=N \
+        AttributeName=id,AttributeType=S \
     --key-schema \
         AttributeName=userId,KeyType=HASH \
         AttributeName=id,KeyType=RANGE \
     --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5
 }
 
+
+function createQueue() {
+    aws --endpoint-url=${endpointUrl} sqs create-queue --queue-name order-book-wallet-integration-queue
+}
+
 configure
 createTable
+createQueue
 
