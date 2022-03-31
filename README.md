@@ -10,7 +10,24 @@ How to test ?
 
 Request
 
-    
+    {
+        "operations": [
+            {
+                "value": 1000.00,
+                "quantity": 2,
+                "userId": 223393,
+                "traceId": "cd8e90d4-32b0-40f7-a3a1-8be706474913",
+                "operationType": "SALE"
+            },
+            {
+                "value": 1000.00,
+                "quantity": 2,
+                "userId": 223394,
+                "traceId": "cd8e90d4-32b0-40f7-a3a1-8be706474913",
+                "operationType": "BUY"
+            }
+        ]
+}
 
 Expected response
 
