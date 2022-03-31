@@ -1,33 +1,23 @@
 package com.meli.wallet.model;
 
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.meli.wallet.config.DynamoDb;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-@Data
-@MappedSuperclass
+@Getter
+@Setter
+@DynamoDBDocument
 public class Audit {
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDBTypeConverted(converter = DynamoDb.LocalDateTimeConverter.class)
+    private ZonedDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at",nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Column(name = "created_by",nullable = false)
-    private String createdBy;
-
-    @Column(name = "updated_by",nullable = false)
+    @DynamoDBTypeConverted(converter = DynamoDb.LocalDateTimeConverter.class)
+    private ZonedDateTime updatedAt;
     private String updatedBy;
-
-    @Version
-    private int version;
 
 }

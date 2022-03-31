@@ -8,9 +8,15 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 
 @Configuration
 public class DynamoDb {
@@ -35,13 +41,13 @@ public class DynamoDb {
     }
 
     @Bean
-    public DynamoDBMapperConfig operationConfigMapper(@Value("${amazon.dynamo.table.wallet}") String operationTable) {
-        return dynamoDBMapperConfig(operationTable);
+    public DynamoDBMapperConfig operationConfigMapper(@Value("${amazon.dynamo.table.wallet}") String walletTable) {
+        return dynamoDBMapperConfig(walletTable);
     }
 
     @Bean
-    public DynamoDBMapper operationMapper(AmazonDynamoDB amazonDynamoDB, DynamoDBMapperConfig operationMapper) {
-        return new DynamoDBMapper(amazonDynamoDB, operationMapper);
+    public DynamoDBMapper walletMapper(AmazonDynamoDB amazonDynamoDB, DynamoDBMapperConfig walletMapper) {
+        return new DynamoDBMapper(amazonDynamoDB, walletMapper);
     }
 
     public DynamoDBMapperConfig dynamoDBMapperConfig(String tableName) {
@@ -52,4 +58,20 @@ public class DynamoDb {
                 .build();
     }
 
+    public static class LocalDateTimeConverter implements DynamoDBTypeConverter<String, ZonedDateTime> {
+
+        @Override
+        public String convert(final ZonedDateTime time) {
+            return time.toString();
+        }
+
+        @Override
+        public ZonedDateTime unconvert(final String stringValue) {
+            try {
+                return ZonedDateTime.parse(stringValue);
+            } catch (DateTimeParseException exception) {
+                return LocalDateTime.parse(stringValue).atZone(ZoneOffset.UTC);
+            }
+        }
+    }
 }

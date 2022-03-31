@@ -2,20 +2,22 @@ package com.meli.wallet.dto;
 import com.meli.wallet.enums.Type;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 public class OperationDto {
 
-    @NotEmpty(message = "User Id cannot be empty")
+    @NotNull(message = "User Id cannot be null")
     private Long userId;
 
-    @NotEmpty(message = "Trace Id cannot be empty")
+    @NotNull(message = "Trace Id cannot be null")
     private UUID traceId;
 
     @DecimalMin(value = "1" , message = "The minimun value for quantity is one operation")
@@ -24,7 +26,7 @@ public class OperationDto {
     @DecimalMin(value = "0.1", message = "Cannot accept operations with price zero")
     private BigDecimal value;
 
-    @NotEmpty(message = "Operation type cannot be empty")
-    private Type type;
+    @NotNull(message = "Operation type cannot be null")
+    private Type operationType;
 
 }

@@ -12,16 +12,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WalletRepository {
 
-    private final DynamoDBMapper operationMapper;
+    private final DynamoDBMapper walletMapper;
     private final QueryFactory query;
 
     public List<Wallet> findById(Wallet wallet) {
-        return operationMapper.query(Wallet.class, query.findById(wallet));
+        return walletMapper.query(Wallet.class, query.findById(wallet));
     }
 
     public void save(Wallet wallet) {
         try {
-            operationMapper.save(wallet);
+            walletMapper.save(wallet);
         } catch (ConditionalCheckFailedException ignore) {
         }
     }
