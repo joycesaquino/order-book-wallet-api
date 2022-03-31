@@ -23,14 +23,11 @@ public class WalletService {
     public void save(OperationsDto dtos) {
 
         var operations = dtos.getOperations();
-
         var transactions = operations.
                 stream()
                 .map(transaction -> repository.findById(converter.apply(transaction)).get());
 
-
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
-
         transactions.forEach(transaction -> {
 
             var dto = operations.
