@@ -21,4 +21,26 @@ public class Wallet {
     private BigDecimal value;
     private Audit audit;
 
+
+    public void credit(Wallet operation) {
+        var operationValue = operation.getValue();
+        var operationQuantity = operation.getQuantity();
+
+        var total = operationValue.multiply(BigDecimal.valueOf(operationQuantity));
+
+        this.setQuantity(operation.getQuantity() + quantity);
+        this.setValue(operation.getValue().add(total));
+
+    }
+
+    public void debit(Wallet operation) {
+        var operationValue = operation.getValue();
+        var operationQuantity = operation.getQuantity();
+
+        var total = operationValue.multiply(BigDecimal.valueOf(operationQuantity));
+
+        this.setQuantity(operation.getQuantity() - quantity);
+        this.setValue(operation.getValue().subtract(total));
+    }
+
 }
