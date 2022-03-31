@@ -7,7 +7,6 @@ import lombok.ToString;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
