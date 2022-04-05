@@ -34,23 +34,25 @@ public class WalletService {
         var operations = dtos.getOperations();
         var transactions = operations.
                 stream()
-                .map(transaction -> repository.findById(converter.apply(transaction)).get());
+                .map(transaction -> repository.findById(converter.apply(transaction)));
 
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
         transactions.forEach(transaction -> {
 
-            var dto = operations.
+            assert transaction.isPresent();
+            var optionalDto = operations.
                     stream().
-                    filter(operation -> operation.getUserId().equals(transaction.getUserId()))
-                    .findFirst().get();
+                    filter(operation -> operation.getUserId().equals(transaction.get().getUserId()))
+                    .findFirst();
 
-            var operationType = dto.getOperationType();
+            assert optionalDto.isPresent();
+            var dto = optionalDto.get();
             var operationQuantity = dto.getQuantity();
             var operationValue = dto.getValue();
 
-            switch (operationType) {
-                case SALE -> transaction.credit(operationValue, operationQuantity);
-                case BUY -> transaction.debit(operationValue, operationQuantity);
+            switch (dto.getOperationType()) {
+                case SALE -> transaction.get().credit(operationValue, operationQuantity);
+                case BUY -> transaction.get().debit(operationValue, operationQuantity);
             }
             transactionWriteRequest.addUpdate(transaction);
         });
