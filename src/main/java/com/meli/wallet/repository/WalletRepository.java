@@ -1,10 +1,7 @@
 package com.meli.wallet.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
-import com.amazonaws.services.dynamodbv2.model.InternalServerErrorException;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.amazonaws.services.dynamodbv2.model.TransactionCanceledException;
+import com.amazonaws.services.dynamodbv2.model.*;
 import com.meli.wallet.model.wallet.Wallet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -23,7 +20,17 @@ public class WalletRepository {
     }
 
     public void executeTransactionWrite(TransactionWriteRequest transactionWriteRequest) {
-        walletMapper.transactionWrite(transactionWriteRequest);
+        try {
+            walletMapper.transactionWrite(transactionWriteRequest);
+        } catch (TransactionCanceledException tce) {
+            System.err.println("Transaction Canceled, implies a client issue, fix before retrying. Error: " + tce.getCancellationReasons());
+        } catch (Exception ex) {
+            System.err.println("An exception occurred, investigate and configure retry strategy. Error: " + ex.getMessage());
+        }
+    }
+
+    public void save(Wallet wallet) {
+        walletMapper.save(wallet);
     }
 
 }

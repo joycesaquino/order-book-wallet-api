@@ -2,6 +2,7 @@ package com.meli.wallet.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.meli.wallet.converter.OperationConverter;
+import com.meli.wallet.dto.OperationDto;
 import com.meli.wallet.dto.OperationsDto;
 import com.meli.wallet.model.wallet.Wallet;
 import com.meli.wallet.repository.WalletRepository;
@@ -29,6 +30,10 @@ public class WalletService {
         return repository.findById(wallet);
     }
 
+    public void create(OperationDto dto) {
+        repository.save(converter.apply(dto));
+    }
+
     public void save(OperationsDto dtos) {
 
         var operations = dtos.getOperations();
@@ -54,7 +59,8 @@ public class WalletService {
                 case SALE -> transaction.get().credit(operationValue, operationQuantity);
                 case BUY -> transaction.get().debit(operationValue, operationQuantity);
             }
-            transactionWriteRequest.addUpdate(transaction);
+
+            transactionWriteRequest.addUpdate(transaction.get());
         });
 
         repository.executeTransactionWrite(transactionWriteRequest);

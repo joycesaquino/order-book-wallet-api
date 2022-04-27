@@ -1,5 +1,6 @@
 package com.meli.wallet.controller;
 
+import com.meli.wallet.dto.OperationDto;
 import com.meli.wallet.dto.OperationsDto;
 import com.meli.wallet.service.WalletService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,15 @@ public class WalletController {
 
     @PostMapping
     public ResponseEntity<?> update(@Valid @RequestBody final OperationsDto dto) {
+        log.info("Request Body {}", dto);
         service.save(dto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@Valid @RequestBody final OperationDto dto) {
+        log.info("Request Body {}", dto);
+        service.create(dto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
